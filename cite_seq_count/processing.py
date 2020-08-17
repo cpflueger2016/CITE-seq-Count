@@ -298,9 +298,9 @@ def collapse_cells(true_to_false, umis_per_cell, final_results, ab_map):
             corrected_barcodes += 1
             for TAG in temp.keys():
                 try:
-	                final_results[real_barcode][TAG].update(temp[TAG])
-	            except KeyError:
-					print('Can not find cell barcode: ' + TAG )
+                    final_results[real_barcode][TAG].update(temp[TAG])
+                except KeyError:
+                    print('Can not find cell barcode: ' + TAG )
             temp_umi_counts = umis_per_cell.pop(fake_barcode)
             #temp_read_counts = reads_per_cell.pop(fake_barcode)
             

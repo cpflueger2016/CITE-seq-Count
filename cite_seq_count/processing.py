@@ -337,8 +337,7 @@ def correct_cells(final_results, reads_per_cell, umis_per_cell, collapsing_thres
     (
         umis_per_cell,
         final_results,
-        corrected_barcodes
-        ) = (
+        corrected_barcodes) = (
             true_to_false=true_to_false,
             umis_per_cell=umis_per_cell,
             final_results=final_results,

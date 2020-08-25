@@ -25,7 +25,6 @@ from cite_seq_count import preprocessing
 def find_best_match(TAG_seq, tags, maximum_distance):
     """
     Find the best match from the list of tags.
-
     Compares the Levenshtein distance between tags and the trimmed sequences.
     The tag and the sequence must have the same length.
     If no matches found returns 'unmapped'.
@@ -34,7 +33,6 @@ def find_best_match(TAG_seq, tags, maximum_distance):
         TAG_seq (string): Sequence from R1 already start trimmed
         tags (dict): A dictionary with the TAGs as keys and TAG Names as values.
         maximum_distance (int): Maximum distance given by the user.
-
     Returns:
         best_match (string): The TAG name that will be used for counting.
     """
@@ -55,7 +53,6 @@ def find_best_match(TAG_seq, tags, maximum_distance):
 def find_best_match_shift(TAG_seq, tags, maximum_distance):
     """
     Find the best match from the list of tags with sliding window.
-
     Compares the Levenshtein distance between tags and the trimmed sequences.
     The tag and the sequence must have the same length.
     If no matches found returns 'unmapped'.
@@ -64,7 +61,6 @@ def find_best_match_shift(TAG_seq, tags, maximum_distance):
         TAG_seq (string): Sequence from R1 already start trimmed
         tags (dict): A dictionary with the TAGs as keys and TAG Names as values.
         maximum_distance (int): Maximum distance given by the user.
-
     Returns:
         best_match (string): The TAG name that will be used for counting.
     """
@@ -89,9 +85,7 @@ def map_reads(read1_path, read2_path, tags, barcode_slice,
                 umi_slice, indexes, whitelist, debug,
                 start_trim, maximum_distance, sliding_window):
     """Read through R1/R2 files and generate a islice starting at a specific index.
-
     It reads both Read1 and Read2 files, creating a dict based on cell barcode.
-
     Args:
         read1_path (string): Path to R1.fastq.gz
         read2_path (string): Path to R2.fastq.gz
@@ -107,7 +101,6 @@ def map_reads(read1_path, read2_path, tags, barcode_slice,
         start_trim (int): Number of bases to trim at the start.
         maximum_distance (int): Maximum distance given by the user.
         sliding_window (bool): A bool enabling a sliding window search
-
     Returns:
         results (dict): A dict of dict of Counters with the mapping results.
         no_match (Counter): A counter with unmapped sequences.
@@ -182,10 +175,8 @@ def map_reads(read1_path, read2_path, tags, barcode_slice,
 
 def merge_results(parallel_results):
     """Merge chunked results from parallel processing.
-
     Args:
         parallel_results (list): List of dict with mapping results.
-
     Returns:
         merged_results (dict): Results combined as a dict of dict of Counters
         umis_per_cell (Counter): Total umis per cell as a Counter
@@ -250,11 +241,9 @@ def correct_umis(final_results, collapsing_threshold, top_cells, max_umis):
 def update_umi_counts(UMIclusters, cell_tag_counts):
     """
     Update a dict object with umis corrected.
-
     Args:
         UMIclusters (list): List of lists with corrected umis
         cell_tag_counts (Counter): Counter of umis
-
     Returns:
         cell_tag_counts (Counter): Updated Counter of umis
         temp_corrected_umis (int): Number of corrected umis
@@ -273,13 +262,11 @@ def update_umi_counts(UMIclusters, cell_tag_counts):
 def collapse_cells(true_to_false, umis_per_cell, final_results, ab_map):
     """
     Collapses cell barcodes based on the mapping true_to_false
-
     Args:
         true_to_false (dict): Mapping between the reference and the "mutated" barcodes.
         umis_per_cell (Counter): Counter of number of umis per cell.
         final_results (dict): Dict of dict of Counters with mapping results.
         ab_map (dict): Dict of the TAGS.
-
     Returns:
         umis_per_cell (Counter): Counter of number of umis per cell.
         final_results (dict): Same as input but with corrected cell barcodes.
@@ -297,11 +284,6 @@ def collapse_cells(true_to_false, umis_per_cell, final_results, ab_map):
             temp = final_results.pop(fake_barcode)
             corrected_barcodes += 1
             for TAG in temp.keys():
-                try:
-                    final_results[real_barcode][TAG].update(temp[TAG])
-                except KeyError:
-                    print('Can not find cell barcode: ' + TAG )
-
                 final_results[real_barcode][TAG].update(temp[TAG])
             temp_umi_counts = umis_per_cell.pop(fake_barcode)
             #temp_read_counts = reads_per_cell.pop(fake_barcode)
@@ -339,11 +321,8 @@ def correct_cells(final_results, reads_per_cell, umis_per_cell, collapsing_thres
     (
         umis_per_cell,
         final_results,
-        corrected_barcodes) = (
         corrected_barcodes
         ) = collapse_cells(
-       corrected_barcodes
-        ) = (
             true_to_false=true_to_false,
             umis_per_cell=umis_per_cell,
             final_results=final_results,
@@ -361,7 +340,6 @@ def correct_cells_whitelist(final_results, umis_per_cell, whitelist, collapsing_
         whitelist (set): The whitelist reference given by the user.
         collapsing_threshold (int): Max distance between umis.
         ab_map (OrederedDict): Tags in an ordered dict.
-
     
     Returns:
         final_results (dict): Same as input but with corrected umis.
@@ -397,13 +375,11 @@ def correct_cells_whitelist(final_results, umis_per_cell, whitelist, collapsing_
 def find_true_to_false_map(barcode_tree, cell_barcodes, whitelist, collapsing_threshold):
     """
     Creates a mapping between "fake" cell barcodes and their original true barcode.
-
     Args:
         barcode_tree (BKTree): BKTree of all original cell barcodes.
         cell_barcodes (List): Cell barcodes to go through.
         whitelist (Set): Set of the whitelist, the "true" cell barcodes.
         collasping_threshold (int): How many mistakes to correct.
-
     Return:
         true_to_false (defaultdict(list)): Contains the mapping between the fake and real barcodes. The key is the real one.
     """
@@ -433,15 +409,12 @@ def find_true_to_false_map(barcode_tree, cell_barcodes, whitelist, collapsing_th
 def generate_sparse_matrices(final_results, ordered_tags_map, top_cells):
     """
     Create two sparse matrices with umi and read counts.
-
     Args:
         final_results (dict): Results in a dict of dicts of Counters.
         ordered_tags_map (dict): Tags in order with indexes as values.
-
     Returns:
         umi_results_matrix (scipy.sparse.dok_matrix): UMI counts
         read_results_matrix (scipy.sparse.dok_matrix): Read counts
-
     """
     umi_results_matrix = sparse.dok_matrix((len(ordered_tags_map) ,len(top_cells)), dtype=int32)
     read_results_matrix = sparse.dok_matrix((len(ordered_tags_map) ,len(top_cells)), dtype=int32)
@@ -451,4 +424,3 @@ def generate_sparse_matrices(final_results, ordered_tags_map, top_cells):
                 umi_results_matrix[ordered_tags_map[TAG],i] = len(final_results[cell_barcode][TAG])
                 read_results_matrix[ordered_tags_map[TAG],i] = sum(final_results[cell_barcode][TAG].values())
     return(umi_results_matrix, read_results_matrix)
-

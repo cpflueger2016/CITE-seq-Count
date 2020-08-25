@@ -274,6 +274,7 @@ def collapse_cells(true_to_false, umis_per_cell, final_results, ab_map):
     """
     print('Collapsing cell barcodes')
     corrected_barcodes = 0
+    encoding = 'utf-8'
     for real_barcode in true_to_false:
         # If the cell barcode is not in the results
         if real_barcode not in final_results:
@@ -287,7 +288,7 @@ def collapse_cells(true_to_false, umis_per_cell, final_results, ab_map):
                 try:
                     final_results[real_barcode][TAG].update(temp[TAG])
                 except:
-                    print("UMI " + real_barcode + " " + TAG + " cannot be found.")
+                    print("UMI " + real_barcode.decode(encoding) + " " + TAG.decode(encoding) + " cannot be found.")
                 
             temp_umi_counts = umis_per_cell.pop(fake_barcode)
             #temp_read_counts = reads_per_cell.pop(fake_barcode)
